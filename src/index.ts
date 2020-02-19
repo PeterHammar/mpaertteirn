@@ -15,6 +15,10 @@ interface Schema{
     //scenarios : Scenarios;
 }
 
+interface Scenario{
+    
+}
+
 interface Scenarios{
     [key: string]: { in: In,out: Out}
 }
@@ -40,75 +44,41 @@ interface Parameter {
 fs.readFile(path.resolve(__dirname, input[0]), (err, data) => {
     if (err) throw err;
 
-    // console.log(JSON.parse(data.toString()));
     let schemaObj: any = JSON.parse(data.toString());
-
-    // const baseName = schemaObj.id;
-    // const baseIn = schemaObj.in;
-    // const baseOut = schemaObj.out;
-    console.log("data: ", data)
 
     let baseSchema: any = {};
     baseSchema.type = "object";
     baseSchema.properties = schemaObj.in.parameters;
-
-    console.log("Type: ", baseSchema.type)
-    console.log("Properties: ",baseSchema.properties)
+    
+    //console.log("Type: ", baseSchema.type)
+    //console.log("Properties: ",baseSchema.properties)
 
     let schemeArr: Schema[];
+    let scenarios: Scenarios = schemaObj.scenarios;
 
-    let scenarios: Scenarios[];
-
-
-    let iteration = 0;
     for(const scenarioKey in schemaObj.scenarios){
-        console.log("Key: ",scenarioKey);
-        console.log("Required: IN: ",(schemaObj.scenarios[scenarioKey].in));
-        console.log("Out parameters: ",(schemaObj.scenarios[scenarioKey].out));
-        //scenarios[iteration] = schemaObj.scenarios[scenarioKey].in
-        iteration++;
+
+        //Each in and out parameters in scenarios
+        let ins = scenarios[scenarioKey].in;
+        let outs = scenarios[scenarioKey].out;
+
+        console.log('Scenario:', scenarioKey)
+        ins.forEach(value => {
+            console.log(schemaObj.in[value]);
+            // console.log('value:', value)
+        });   
     }
-    
-    // Schema
-    // in
-    // out
+    //console.log("Scenarios", scenarios);
 
-    // Scenarios
-    // Vad är required och inte
-
+    let baseData = JSON.stringify(scenarios, null, 4);
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // let test : Schema;
-    // test.in.parameters;
-    // test.out.parameters;
-    // test.scenarios;
-
-
-    // console.log("Baseschema",baseSchema);
-    // let baseData = JSON.stringify(baseSchema, null, 4);
-
-    // fs.writeFile('Schema.txt', baseData, (err) => {
-    //     if (err) throw err;
-    //     console.log('The file has been savZed!');
-    // });
+    fs.writeFile('Schema.txt', baseData, (err) => {
+        if (err) throw err;
+        console.log('The file has been saved!');
+    });
 });
-
-
 
 /*
 -i
 -o
--id ligger längst nere
 */
